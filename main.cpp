@@ -4,22 +4,19 @@ int main() {
     // Aumentei um pouco o espaço em Y e Z para mais folga
     Sculptor parque(120, 85, 50);
 
-    // ==============================
-    // 1️⃣ Piso de areia (arena)
-    // ==============================
+    
+    // Piso de areia
     parque.setColor(0.94, 0.87, 0.73, 1.0); // areia
     parque.putBox(5, 115, 5, 60, 0, 1); // piso
 
-   // ==============================
-// 2️⃣ Cercas ao redor da arena (versão simplificada e mais densa)
-// ==============================
+   // Cercas ao redor da arena 
 parque.setColor(0.65, 0.50, 0.39, 1.0); // marrom madeira
 
-int espacamento = 4; // postes mais próximos (antes era 10)
+int espacamento = 4; // postes mais próximos 
 int alturaCerca = 4; // altura dos postes
 int zArame = 3;      // altura da linha horizontal
 
-// ---- Frente (lado Y = 5)
+//  Frente (lado Y = 5)
 for (int x = 5; x <= 115; x += espacamento) {
     parque.putBox(x, x, 5, 5, 1, alturaCerca); // poste
     // linha horizontal ligando os postes
@@ -30,7 +27,7 @@ for (int x = 5; x <= 115; x += espacamento) {
     }
 }
 
-// ---- Fundo (lado Y = 60)
+// Fundo (lado Y = 60)
 for (int x = 5; x <= 115; x += espacamento) {
     parque.putBox(x, x, 60, 60, 1, alturaCerca); // poste
     if (x + espacamento <= 115) {
@@ -38,9 +35,7 @@ for (int x = 5; x <= 115; x += espacamento) {
             parque.putVoxel(x2, 60, zArame);
         }
     }
-}
-
-// ---- Lateral direita (lado X = 115)
+// Lateral direita (lado X = 115)
 for (int y = 5; y <= 60; y += espacamento) {
     parque.putBox(115, 115, y, y, 1, alturaCerca); // poste
     if (y + espacamento <= 60) {
@@ -51,9 +46,8 @@ for (int y = 5; y <= 60; y += espacamento) {
 }
 
 
-/// ==============================
-// 3️⃣ Muro com portão (saída do boi)
-// ==============================
+
+// Breque
 
 // Cor cinza-claro (alvenaria visível no visualizador OFF)
 parque.setColor(0.8, 0.8, 0.8, 1.0);
@@ -61,20 +55,17 @@ parque.setColor(0.8, 0.8, 0.8, 1.0);
 // Cria o muro inteiro
 parque.putBox(5, 5, 5, 60, 1, 10);
 
-// Portão central (estreito e aberto só embaixo)
+// Portão central 
 int yCentro = (5 + 60) / 2;  // centro da parede
 int larguraPortao = 2;       // largura total do portão
 int y0Portao = yCentro - larguraPortao / 2;
 int y1Portao = yCentro + larguraPortao / 2;
 
-// Abertura inferior (tipo portal)
+// Abertura inferior 
 parque.cutBox(5, 5, y0Portao, y1Portao, 1, 6);
 
-
-
-    // ==============================
-    // 4️⃣ Arquibancada (fora da arena)
-    // ==============================
+    
+    // Arquibancada
     parque.setColor(0.8, 0.8, 0.8, 1.0); // cimento
 
     int degraus = 6;
@@ -94,9 +85,10 @@ parque.cutBox(5, 5, y0Portao, y1Portao, 1, 6);
         parque.putBox(10, 110, y0, y1, 0, z1);
     }
 
-   // ==============================
-// 5️⃣ Cobertura da arquibancada (corrigida)
-// ==============================
+
+
+// Cobertura da arquibancada
+
 parque.setColor(0.45, 0.45, 0.45, 1.0); // telhado
 
 int yInicioTeto = 61; // começa no início da arquibancada
@@ -108,26 +100,49 @@ if (yFimTeto + 2 < 85) {
     parque.putBox(10, 110, yInicioTeto, yFimTeto + 2, zAlturaTeto, zAlturaTeto + 1);
 }
 
-// ==============================
-// Linhas da faixa do boi pintadas no piso
-// ==============================
+// Cor das colunas (mesma do teto)
+parque.setColor(0.45, 0.45, 0.45, 1.0); 
+
+int xColunaEsq = 10;       // ponta esquerda da arquibancada
+int xColunaDir = 110;      // ponta direita da arquibancada
+int yColuna = yInicioTeto; // frontal da arquibancada
+int zBase = 0;             // primeiro degrau
+int zTopo = zAlturaTeto;   // altura do teto
+int larguraColuna = 2;     // largura da coluna
+
+// Coluna esquerda
+parque.putBox(xColunaEsq, xColunaEsq + larguraColuna - 1, yColuna, yColuna + 1, zBase, zTopo);
+
+// Coluna direita
+parque.putBox(xColunaDir - larguraColuna + 1, xColunaDir, yColuna, yColuna + 1, zBase, zTopo);
+
+
+
+// Linhas da faixa do boi
+
 parque.setColor(0.8, 0.8, 0.8, 1.0); // cinza claro
-int xLinha1 = 30;
-int xLinha2 = 50; // separadas por 20 blocos
-int yInicio = 33;
-int yFim = 60;
-int zTopoPiso = 1; // topo do piso
 
-for (int y = yInicio; y <= yFim; y++) {
-    parque.putVoxel(xLinha1, y, zTopoPiso);
-    parque.putVoxel(xLinha2, y, zTopoPiso);
-}
+int yInicio = 5;   // começa na cerca da frente
+int yFim = 60;     // termina na cerca do fundo
+int zChao = 1;     // topo do piso (visível)
+int larguraFaixa = 1;
+
+// Posicionadas na metade final da pista
+int xLinha1 = 70;  // primeira linha vertical
+int xLinha2 = 90;  // segunda linha vertical, separada da primeira
+
+// Linha 1
+parque.cutBox(xLinha1, xLinha1 + larguraFaixa, yInicio, yFim, zChao, zChao);
+parque.putBox(xLinha1, xLinha1 + larguraFaixa, yInicio, yFim, zChao, zChao);
+
+// Linha 2
+parque.cutBox(xLinha2, xLinha2 + larguraFaixa, yInicio, yFim, zChao, zChao);
+parque.putBox(xLinha2, xLinha2 + larguraFaixa, yInicio, yFim, zChao, zChao);
 
 
 
-// ==============================
+
 // Abertura na lateral direita para o boi
-// ==============================
 int yCentroSaida = (5 + 60) / 2;  // centro da lateral direita
 int larguraSaida = 12;            // 3 estacas * 4 blocos espaçamento
 int y0Saida = yCentroSaida - larguraSaida/2;
@@ -142,10 +157,9 @@ for (int y = y0Saida; y <= y1Saida; y++) {
 }
 
 
-    // ==============================
-    // 6️⃣ Exportar modelo 3D
-    // ==============================
+    // Exportar modelo 3D
     parque.writeOFF("parque_vaquejada.off");
 
     return 0;
+}
 }

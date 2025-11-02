@@ -17,6 +17,111 @@ void Sculptor::cutVoxel(int x, int y, int z) {
     v[x][y][z].show = false;
 }
 
+// ---- Esferas ----
+void Sculptor::putSphere(int xcenter, int ycenter, int zcenter, int radius) {
+    int x0 = xcenter - radius;
+    int x1 = xcenter + radius;
+    int y0 = ycenter - radius;
+    int y1 = ycenter + radius;
+    int z0 = zcenter - radius;
+    int z1 = zcenter + radius;
+
+    for (int i = x0; i <= x1; ++i) {
+        for (int j = y0; j <= y1; ++j) {
+            for (int k = z0; k <= z1; ++k) {
+                if (i < 0 || i >= nx || j < 0 || j >= ny || k < 0 || k >= nz) continue;
+                int dx = i - xcenter;
+                int dy = j - ycenter;
+                int dz = k - zcenter;
+                if (dx*dx + dy*dy + dz*dz <= radius*radius) {
+                    v[i][j][k].show = true;
+                    v[i][j][k].r = r;
+                    v[i][j][k].g = g;
+                    v[i][j][k].b = b;
+                    v[i][j][k].a = a;
+                }
+            }
+        }
+    }
+}
+
+void Sculptor::cutSphere(int xcenter, int ycenter, int zcenter, int radius) {
+    int x0 = xcenter - radius;
+    int x1 = xcenter + radius;
+    int y0 = ycenter - radius;
+    int y1 = ycenter + radius;
+    int z0 = zcenter - radius;
+    int z1 = zcenter + radius;
+
+    for (int i = x0; i <= x1; ++i) {
+        for (int j = y0; j <= y1; ++j) {
+            for (int k = z0; k <= z1; ++k) {
+                if (i < 0 || i >= nx || j < 0 || j >= ny || k < 0 || k >= nz) continue;
+                int dx = i - xcenter;
+                int dy = j - ycenter;
+                int dz = k - zcenter;
+                if (dx*dx + dy*dy + dz*dz <= radius*radius) {
+                    v[i][j][k].show = false;
+                }
+            }
+        }
+    }
+}
+
+// ---- Elipsóides ----
+void Sculptor::putEllipsoid(int xcenter, int ycenter, int zcenter, int rx, int ry, int rz) {
+    if (rx == 0 || ry == 0 || rz == 0) return;
+    int x0 = xcenter - rx;
+    int x1 = xcenter + rx;
+    int y0 = ycenter - ry;
+    int y1 = ycenter + ry;
+    int z0 = zcenter - rz;
+    int z1 = zcenter + rz;
+
+    for (int i = x0; i <= x1; ++i) {
+        for (int j = y0; j <= y1; ++j) {
+            for (int k = z0; k <= z1; ++k) {
+                if (i < 0 || i >= nx || j < 0 || j >= ny || k < 0 || k >= nz) continue;
+                double dx = double(i - xcenter) / double(rx);
+                double dy = double(j - ycenter) / double(ry);
+                double dz = double(k - zcenter) / double(rz);
+                if (dx*dx + dy*dy + dz*dz <= 1.0) {
+                    v[i][j][k].show = true;
+                    v[i][j][k].r = r;
+                    v[i][j][k].g = g;
+                    v[i][j][k].b = b;
+                    v[i][j][k].a = a;
+                }
+            }
+        }
+    }
+}
+
+void Sculptor::cutEllipsoid(int xcenter, int ycenter, int zcenter, int rx, int ry, int rz) {
+    if (rx == 0 || ry == 0 || rz == 0) return;
+    int x0 = xcenter - rx;
+    int x1 = xcenter + rx;
+    int y0 = ycenter - ry;
+    int y1 = ycenter + ry;
+    int z0 = zcenter - rz;
+    int z1 = zcenter + rz;
+
+    for (int i = x0; i <= x1; ++i) {
+        for (int j = y0; j <= y1; ++j) {
+            for (int k = z0; k <= z1; ++k) {
+                if (i < 0 || i >= nx || j < 0 || j >= ny || k < 0 || k >= nz) continue;
+                double dx = double(i - xcenter) / double(rx);
+                double dy = double(j - ycenter) / double(ry);
+                double dz = double(k - zcenter) / double(rz);
+                if (dx*dx + dy*dy + dz*dz <= 1.0) {
+                    v[i][j][k].show = false;
+                }
+            }
+        }
+    }
+}
+
+
 
 Sculptor::Sculptor(int _nx, int _ny, int _nz) {
     nx = _nx;
