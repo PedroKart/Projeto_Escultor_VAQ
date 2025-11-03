@@ -1,7 +1,7 @@
 #include "sculptor.h"
 
 int main() {
-    // Aumentei um pouco o espaço em Y e Z para mais folga
+    // Parque de vaquejada em 3D+
     Sculptor parque(120, 85, 50);
 
     
@@ -12,14 +12,14 @@ int main() {
    // Cercas ao redor da arena 
 parque.setColor(0.65, 0.50, 0.39, 1.0); // marrom madeira
 
-int espacamento = 4; // postes mais próximos 
-int alturaCerca = 4; // altura dos postes
+int espacamento = 4; // Estacas
+int alturaCerca = 4; // altura das estacas
 int zArame = 3;      // altura da linha horizontal
 
 //  Frente (lado Y = 5)
 for (int x = 5; x <= 115; x += espacamento) {
-    parque.putBox(x, x, 5, 5, 1, alturaCerca); // poste
-    // linha horizontal ligando os postes
+    parque.putBox(x, x, 5, 5, 1, alturaCerca); // estaca
+    // linha horizontal ligando os estacas
     if (x + espacamento <= 115) {
         for (int x2 = x; x2 < x + espacamento; x2++) {
             parque.putVoxel(x2, 5, zArame);
@@ -29,15 +29,16 @@ for (int x = 5; x <= 115; x += espacamento) {
 
 // Fundo (lado Y = 60)
 for (int x = 5; x <= 115; x += espacamento) {
-    parque.putBox(x, x, 60, 60, 1, alturaCerca); // poste
+    parque.putBox(x, x, 60, 60, 1, alturaCerca); // estaca
     if (x + espacamento <= 115) {
         for (int x2 = x; x2 < x + espacamento; x2++) {
             parque.putVoxel(x2, 60, zArame);
         }
     }
+}
 // Lateral direita (lado X = 115)
 for (int y = 5; y <= 60; y += espacamento) {
-    parque.putBox(115, 115, y, y, 1, alturaCerca); // poste
+    parque.putBox(115, 115, y, y, 1, alturaCerca); // estaca
     if (y + espacamento <= 60) {
         for (int y2 = y; y2 < y + espacamento; y2++) {
             parque.putVoxel(115, y2, zArame);
@@ -47,26 +48,35 @@ for (int y = 5; y <= 60; y += espacamento) {
 
 
 
-// Breque
+// Muro
 
-// Cor cinza-claro (alvenaria visível no visualizador OFF)
+// Cor cinza-claro 
 parque.setColor(0.8, 0.8, 0.8, 1.0);
 
-// Cria o muro inteiro
-parque.putBox(5, 5, 5, 60, 1, 10);
+// Cria o muro
+parque.putBox(5, 5, 5, 60, 1, 12);
 
-// Portão central 
+// Cortes arredondados nos cantos superiores
+int raioCanto = 3;
+
+// Canto frontal esquerdo
+parque.cutEllipsoid(5, 5, 12, raioCanto, raioCanto, raioCanto);
+
+// Canto frontal direito
+parque.cutEllipsoid(5, 60, 12, raioCanto, raioCanto, raioCanto);
+
+// Porteira central 
 int yCentro = (5 + 60) / 2;  // centro da parede
-int larguraPortao = 2;       // largura total do portão
-int y0Portao = yCentro - larguraPortao / 2;
-int y1Portao = yCentro + larguraPortao / 2;
+int larguraPorteira = 2;       // largura total da porteira
+int y0Porteira = yCentro - larguraPorteira / 2;
+int y1Porteira = yCentro + larguraPorteira / 2;
 
 // Abertura inferior 
-parque.cutBox(5, 5, y0Portao, y1Portao, 1, 6);
+parque.cutBox(5, 5, y0Porteira, y1Porteira, 1, 6);
 
     
     // Arquibancada
-    parque.setColor(0.8, 0.8, 0.8, 1.0); // cimento
+    parque.setColor(0.8, 0.8, 0.8, 1.0); // cinza claro
 
     int degraus = 6;
     int alturaDegrau = 2;
@@ -117,9 +127,7 @@ parque.putBox(xColunaEsq, xColunaEsq + larguraColuna - 1, yColuna, yColuna + 1, 
 parque.putBox(xColunaDir - larguraColuna + 1, xColunaDir, yColuna, yColuna + 1, zBase, zTopo);
 
 
-
 // Linhas da faixa do boi
-
 parque.setColor(0.8, 0.8, 0.8, 1.0); // cinza claro
 
 int yInicio = 5;   // começa na cerca da frente
@@ -139,9 +147,6 @@ parque.putBox(xLinha1, xLinha1 + larguraFaixa, yInicio, yFim, zChao, zChao);
 parque.cutBox(xLinha2, xLinha2 + larguraFaixa, yInicio, yFim, zChao, zChao);
 parque.putBox(xLinha2, xLinha2 + larguraFaixa, yInicio, yFim, zChao, zChao);
 
-
-
-
 // Abertura na lateral direita para o boi
 int yCentroSaida = (5 + 60) / 2;  // centro da lateral direita
 int larguraSaida = 12;            // 3 estacas * 4 blocos espaçamento
@@ -156,10 +161,42 @@ for (int y = y0Saida; y <= y1Saida; y++) {
     parque.cutVoxel(115, y, zArame);
 }
 
+// CÂMERA DE FILMAGEM ("Boi de TV")
 
-    // Exportar modelo 3D
-    parque.writeOFF("parque_vaquejada.off");
+// Estaca mais alta próxima à faixa do boi
+parque.setColor(0.65, 0.50, 0.39, 1.0); // mesma cor da cerca (madeira)
+int xCamera = 73;   // um pouco depois da faixa
+int yCamera = 5;    // na cerca da frente
+int alturaCamera = 10; // mais alta que as outras estacas
+
+// Desenha a estaca mais alta
+parque.putBox(xCamera, xCamera, yCamera, yCamera, 1, alturaCamera);
+
+// Esfera representando a câmera (cor do muro)
+parque.setColor(0.8, 0.8, 0.8, 1.0);
+int zCentroCam = alturaCamera + 1; // em cima da estaca
+parque.putSphere(xCamera, yCamera, zCentroCam, 2);
+
+// Lente da câmera (voxel preto na frente)
+parque.setColor(0.0, 0.0, 0.0, 1.0);
+parque.putVoxel(xCamera, yCamera + 2, zCentroCam);
+
+// ABERTURA SUPERIOR NA ARQUIBANCADA
+parque.setColor(0.8, 0.8, 0.8, 1.0); // cinza claro
+
+// Remove a parte da entrada acima do chão
+int x0Box = 50;
+int x1Box = 70;
+int y0Box = 61;   // início da arquibancada
+int y1Box = 84;   // final da arquibancada (traseira)
+int z0Box = 2;    // começa alguns degraus acima do chão
+int z1Box = 10;   // até o topo da arquibancada
+
+parque.cutBox(x0Box, x1Box, y0Box, y1Box, z0Box, z1Box);
+
+// Exportar modelo 3D
+parque.writeOFF("parque_vaquejada.off");
 
     return 0;
 }
-}
+
