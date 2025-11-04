@@ -68,7 +68,7 @@ void Sculptor::cutSphere(int xcenter, int ycenter, int zcenter, int radius) {
     }
 }
 
-// ---- Elipsóides ----
+/* ---- Elipsóides ----
 void Sculptor::putEllipsoid(int xcenter, int ycenter, int zcenter, int rx, int ry, int rz) {
     if (rx == 0 || ry == 0 || rz == 0) return;
     int x0 = xcenter - rx;
@@ -96,7 +96,7 @@ void Sculptor::putEllipsoid(int xcenter, int ycenter, int zcenter, int rx, int r
         }
     }
 }
-
+*/
 void Sculptor::cutEllipsoid(int xcenter, int ycenter, int zcenter, int rx, int ry, int rz) {
     if (rx == 0 || ry == 0 || rz == 0) return;
     int x0 = xcenter - rx;
