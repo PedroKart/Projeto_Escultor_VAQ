@@ -33,14 +33,9 @@ Toda a modelagem é realizada exclusivamente por código, sem uso de ferramentas
 - Linguagem: **C++**
 - Paradigma: **Programação Orientada a Objetos**
 - Estrutura: Matrizes 3D (voxels)
-- Ambiente de desenvolvimento: Qt Creator / compilador padrão C++
+- Ambiente de desenvolvimento: VS Code / compilador padrão C++ / MeshLab
 
 ---
 
-## 📂 Estrutura do Projeto
-/src
-Sculptor.cpp
-Sculptor.h
-main.cpp
-README.md
+
 
